@@ -2,4 +2,3 @@
 #define     DIMENSIONS      3
 
 #define     GEOMETRY        CARTESIAN
-

@@ -37,7 +37,7 @@ class RadCooling {
 
   real TcoolFloor;
   /* TRML extras */
-  real Tcl, chi; 
+  real Tcl, chi;
 
   IdefixArray3D<real> delta_eng;  // Source terms of the cooling operator
   /* TRML extras */

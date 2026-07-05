@@ -344,7 +344,7 @@ Fluid<Phys>::Fluid(Grid &grid, Input &input, DataBlock *datain, int n) {
     IDEFIX_ERROR("Radiative cooling requires HAVE_ENERGY=1 (non-isothermal configuration).");
   }
 #endif
-  
+
   if(input.CheckEntry("Boost", "on")>=0) {
     bool boost_on = (input.Get<int>("Boost", "on", 0)==0)? false: true;
     this->frameBoostOn = boost_on;

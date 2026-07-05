@@ -190,7 +190,7 @@ void Setup::InitFlow(DataBlock &data) {
     for(int j = 0; j < d.np_tot[JDIR] ; j++) {
       for(int i = 0; i < d.np_tot[IDIR] ; i++) {
         // Lecoanet
-        d.Vc(RHO,k,j,i)     =  ONE_F + del_rho_by_rhow * 
+        d.Vc(RHO,k,j,i)     =  ONE_F + del_rho_by_rhow *
                                HALF_F * ( tanh((d.x[KDIR](k)-z1)/tanh_a) - tanh((d.x[KDIR](k)-z2)/tanh_a) );
 
         d.Vc(RHO,k,j,i)    *= (ONE_F+random_level*distribution(generator));
@@ -204,7 +204,7 @@ void Setup::InitFlow(DataBlock &data) {
         d.Vc(VX3,k,j,i)    *= (ONE_F+random_level*distribution(generator));
         d.Vc(VX2,k,j,i)    += (random_level*distribution(generator));
 
-        d.Vc(TRG,k,j,i)  = HALF_F * ( tanh((d.x[KDIR](k)-z2)/tanh_a) - tanh((d.x[KDIR](k)-z1)/tanh_a) + 2*ONE_F ); 
+        d.Vc(TRG,k,j,i)  = HALF_F * ( tanh((d.x[KDIR](k)-z2)/tanh_a) - tanh((d.x[KDIR](k)-z1)/tanh_a) + 2*ONE_F );
         d.Vc(TRG,k,j,i) *= (ONE_F+random_level*distribution(generator));
         #if HAVE_ENERGY
         d.Vc(PRS,k,j,i) = P0*(ONE_F+random_level*distribution(generator));
@@ -291,7 +291,7 @@ void UserdefBoundary(Hydro *hydro, int dir, BoundarySide side, real t) {
   [[maybe_unused]] IdefixArray1D<real> x1 = hydro->data->x[IDIR];
   [[maybe_unused]] IdefixArray1D<real> x2 = hydro->data->x[JDIR];
   IdefixArray1D<real> x3 = hydro->data->x[KDIR];
-  
+
   const int nxi = hydro->data->np_int[IDIR];
   const int nxj = hydro->data->np_int[JDIR];
   const int nxk = hydro->data->np_int[KDIR];
@@ -410,18 +410,18 @@ void ComputeUserVars(DataBlock & data, UserDefVariablesContainer &variables) {
           /*
           if ( (temperature<(1.2*Tcl)) || (temperature>(0.9*chi*Tcl)) )
             delta_eng_total_cool_output(k,j,i) = ZERO_F;
-          else 
+          else
           */
           delta_eng_total_cool_output(k,j,i) = delta_eng_total_cool_host(k,j,i);
         } else {
           delta_eng_total_cool_output(k,j,i) = ZERO_F;
         }
-        
+
         if (data.hydro->coolingOn) {
           real Lambda = ZERO_F;
           if ((temperature<=TcoolFloor) || (d.Vc(TRG,k,j,i)>0.99)) {
             Lambda = ZERO_F;
-          // } 
+          // }
           // if ( (temperature<(1.2*Tcl)) || (temperature>(0.9*chi*Tcl)) ) {
           //   Lambda = ZERO_F;
           } else {
@@ -429,12 +429,12 @@ void ComputeUserVars(DataBlock & data, UserDefVariablesContainer &variables) {
           }
           E_dot_cool(k,j,i) = (pow(d.Vc(RHO,k,j,i)*rho_unit*XH/m_p, 2)*Lambda*d.dV(k,j,i)*pow(len_unit, 3)); // cgs
         } else {
-          E_dot_cool(k,j,i) = ZERO_F; 
+          E_dot_cool(k,j,i) = ZERO_F;
         }
       }
     }
   }
-  // if ((d.t+d.dt)>tstop) 
+  // if ((d.t+d.dt)>tstop)
 }
 
 // Analyse data to produce an output
@@ -570,7 +570,7 @@ void MakeAnalysis(DataBlock & data) {
   [[maybe_unused]] IdefixArray3D<real> dV_dev = data_dev_ptr->dV;
 
   real Q_Lam = ZERO_F;
-  
+
   idefix_reduce("Sum_Q",
               kbeg,kend,
               jbeg,jend,
@@ -638,7 +638,7 @@ void MakeAnalysis(DataBlock & data) {
               Kokkos::Sum<real> (Q_Lam));
   Q_Lam *= len_unit; // cgs
 
-  
+
   IdefixArray2D<int> bounds_dev ("bound_indices", 3, 2); // begs, ends
   IdefixHostArray2D<int> bounds_host = Kokkos::create_mirror_view(Kokkos::HostSpace(),bounds_dev);
   for (int dir=0; dir<3; dir++) {
@@ -646,7 +646,7 @@ void MakeAnalysis(DataBlock & data) {
     bounds_host(dir,1) = d.end[dir];
   }
   Kokkos::deep_copy(bounds_dev, bounds_host);
-  
+
   real tmp[gridHost.np_int[KDIR]];
   real vel_avg_prof[3][gridHost.np_int[KDIR]];
   for (int dir=3; dir>0; dir--) {
@@ -725,17 +725,17 @@ void MakeAnalysis(DataBlock & data) {
       }
       file_profile << std::endl;
     }
-    
+
     idefix_for("local_profile_reset",
               0, gridHost.np_int[KDIR],
               KOKKOS_LAMBDA(const int k) {
-                local_profile(k) = ZERO_F;  
+                local_profile(k) = ZERO_F;
               }
     );
     Kokkos::deep_copy(local_profile_host, local_profile);
-    
-  } 
-  
+
+  }
+
   real vel_turb_prof[3][gridHost.np_int[KDIR]];
   for (int dir=3; dir>0; dir--) {
     IdefixHostArray1D<real> local_profile("local_profile_array", gridHost.np_int[KDIR]);
@@ -803,7 +803,7 @@ void MakeAnalysis(DataBlock & data) {
                 Kokkos::Sum<real> (in_plane));
       local_profile_host(k-nghost) = in_plane;
     }
-    
+
     for (int k=0; k<gridHost.np_int[KDIR]; k++) {
       tmp[k] = local_profile_host(k);
     }
@@ -827,11 +827,11 @@ void MakeAnalysis(DataBlock & data) {
       }
       file_profile << std::endl;
     }
-    
+
     idefix_for("local_profile_reset",
               0, gridHost.np_int[KDIR],
               KOKKOS_LAMBDA(const int k) {
-                local_profile(k) = ZERO_F;  
+                local_profile(k) = ZERO_F;
               }
     );
     Kokkos::deep_copy(local_profile_host, local_profile);
@@ -857,7 +857,7 @@ void MakeAnalysis(DataBlock & data) {
                   [[maybe_unused]] real Tcl = user_params_dev(7);
                   [[maybe_unused]] real chi = user_params_dev(8);
                   [[maybe_unused]] real temperature = Vc_dev(PRS,k,j,i)/Vc_dev(RHO,k,j,i)*(mu*m_p/kB)*pow(vel_unit,2);
-                  if (!( (temperature<(1.005*Tcl)) || (temperature>(0.998*chi*Tcl)) )) 
+                  if (!( (temperature<(1.005*Tcl)) || (temperature>(0.998*chi*Tcl)) ))
                     localSum += (Vc_dev(RHO,k,j,i)*dV_dev(k,j,i));
               },
               Kokkos::Sum<real> (denom));
@@ -867,7 +867,7 @@ void MakeAnalysis(DataBlock & data) {
   for (int dir=3; dir>0; dir--) {
     v_turb[dir-1] = -99999999;
     for (int k=0; k<gridHost.np_int[KDIR]; k++) {
-      v_turb[dir-1] = (v_turb[dir-1]<vel_turb_prof[dir-1][k])?vel_turb_prof[dir-1][k]:vel_turb_prof[dir-1][k]; 
+      v_turb[dir-1] = (v_turb[dir-1]<vel_turb_prof[dir-1][k])?vel_turb_prof[dir-1][k]:vel_turb_prof[dir-1][k];
     }
   }
   #ifdef WITH_MPI

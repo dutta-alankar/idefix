@@ -124,7 +124,7 @@ void RadCooling::TownsendIntegration(real dt) {
         // cooling, i.e. add the energy needed to bring the gas up to TcoolFloor.
         real del_prs = -Vc(RHO,k,j,i)/(mu*m_p/kB)*(temperature-TcoolFloor)/pow(vel_unit,2);
         delta_eng(k,j,i) = eos.GetInternalEnergy(del_prs, Vc(RHO,k,j,i));
-      }  
+      }
       else {
         while (T_indx_lo<=T_indx_hi) {
           T_indx_mid = (T_indx_lo + T_indx_hi)/2;
@@ -188,7 +188,7 @@ void RadCooling::TownsendIntegration(real dt) {
         del_prs = -Vc(RHO,k,j,i)/(mu*m_p/kB)*(temperature-T_fin)/pow(vel_unit,2);
         delta_eng(k,j,i) = eos.GetInternalEnergy(del_prs, Vc(RHO,k,j,i));
         /* TRML extras */
-        if ( Vc(TRG,k,j,i)>0.99 ) { 
+        if ( Vc(TRG,k,j,i)>0.99 ) {
           del_prs = -Vc(RHO,k,j,i)/(mu*m_p/kB)*(temperature-chi*Tcl)/pow(vel_unit,2);
           delta_eng(k,j,i) = eos.GetInternalEnergy(del_prs, Vc(RHO,k,j,i));
         }
